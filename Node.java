@@ -52,19 +52,19 @@ public class Node implements Comparable {
 		this.neighbors = neighbors;
 	}
 
-    @Override
-    public int compareTo(Object o) {
-    	Node node = (Node) o;
-    	return (cost + heuristic) - (node.cost() + node.heuristic());
-    }
-
-    @Override
-    public String toString() {
-		return "[ " + x + ", " + y + "]";
-    }
-
-	public boolean isEqual(Node other) {
-		return getX() == other.getX() && getY() == other.getY();
+	@Override
+	public int compareTo(Object o) {
+		Node node = (Node) o;
+		return (cost + heuristic) - (node.cost() + node.heuristic());
 	}
+
+	@Override
+	public String toString() {
+		return "[ " + x + ", " + y + "]";
+	}
+
+	//public boolean isEqual(Node other) {
+	//	return getX() == other.getX() && getY() == other.getY();
+	//}
 
 }
