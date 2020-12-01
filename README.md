@@ -9,5 +9,5 @@ This directory contains `AStar.java`, `Node.java`, `Sorter.java`, and `SorterTes
 
 # Improvements: #
 - `AStar.java`: 
-   - [ ] Improve flexibility in code and stray away from grid. Implement graph structure and use breadth-first searching to accomplish tasks.
+   - [ ] Improve flexibility in code and stray away from grid. Implement graph structure and potentially implement recursion to accomplish tasks.
    - [ ] Create a visualization for the algorithm in *JavaFX*.
