@@ -1,16 +1,15 @@
-import java.util.ArrayList;
-
-public class Node implements Comparable {
+public class Node {
 
 	private int x, y, cost, heuristic;
+	private boolean isWall;
 	private Node prev;
-	private boolean solution; // if cell is part of the solution path
-
-	private ArrayList<Node> neighbors;
 
 	public Node(int x, int y) {
 		this.x = x;
 		this.y = y;
+		cost = 0;
+		isWall = false;
+		prev = null;
 	}
 
 	public int getX() { return x; }
@@ -20,51 +19,37 @@ public class Node implements Comparable {
 	public int cost() { return cost; }
 
 	public int heuristic() { return heuristic; }
+	
+	public int f() { return cost + heuristic; }
 
 	public Node previous() { return prev; }
 
-	public boolean solution() { return solution; }
-	
-	public ArrayList<Node> neighbors() { return neighbors; }
+	public boolean isWall() { return isWall; }
 
-	public void setXY(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
 
-	public void setCost(int cost) {
-		this.cost = cost;
-	}
 
 	public void setHeuristic(int heuristic) {
 		this.heuristic = heuristic;
 	}
 
+	public void setCost(int cost) {
+		this.cost = cost;
+	}
+	
 	public void setPrevious(Node prev) {
 		this.prev = prev;
 	}
-
-	public void isInPath(boolean solution) {
-		this.solution = solution;
+	
+	public void setWall() {
+		isWall = true;
 	}
 
-	public void setNeighbors(ArrayList<Node> neighbors) {
-		this.neighbors = neighbors;
-	}
-
-	@Override
-	public int compareTo(Object o) {
-		Node node = (Node) o;
-		return (cost + heuristic) - (node.cost() + node.heuristic());
+	public boolean sameLocation(Node other) {
+		return getX() == other.getX() && getY() == other.getY();
 	}
 
 	@Override
 	public String toString() {
-		return "[ " + x + ", " + y + "]";
+		return "(" + x + ", " + y + ")";
 	}
-
-	//public boolean isEqual(Node other) {
-	//	return getX() == other.getX() && getY() == other.getY();
-	//}
-
 }
