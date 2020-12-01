@@ -18,24 +18,24 @@ public class AStar {
 
 	private static Node[][] grid;
 	/*	
-		createGrid(7):
+	    createGrid(7):
 
 	    x-axis
-				1	2	3	4	5	6  
+		    1   2   3   4   5   6  
 	y-axis    +-----------------------+
-			1 |	  |   |   |   |   |   |
-		 	  |---+---+---+---+---+---|
-			2 |	  |   |   |   |   |   |
-		 	  |---+---+---+---+---+---|
-			3 |	  |   |   |   |   |   |
-		 	  |---+---+---+---+---+---|
-			4 |	  |   |   |   |   |   |
-		 	  |---+---+---+---+---+---|
-			5 |	  |   |   |   |   |   |
-		 	  |---+---+---+---+---+---|
-			6 |	  |   |   |   |   |   |
-		 	  +-----------------------+
-		   
+		1 |   |   |   |   |   |   |
+		  |---+---+---+---+---+---|
+		2 |   |   |   |   |   |   |
+		  |---+---+---+---+---+---|
+		3 |   |   |   |   |   |   |
+		  |---+---+---+---+---+---|
+		4 |   |   |   |   |   |   |
+		  |---+---+---+---+---+---|
+		5 |   |   |   |   |   |   |
+		  |---+---+---+---+---+---|
+		6 |   |   |   |   |   |   |
+		  +-----------------------+
+	   
 	*/
 	public static void createGrid(int size) {
 		grid = new Node[size][size];
@@ -88,95 +88,94 @@ public class AStar {
 		 - Improvements: maybe a double for loop? recursion? ...	
 	*/
 	public static Node findBestNeighbor(Node curr) {
-
 		int rLen = grid.length;
 		int cLen = grid[0].length;
 		
 		closed.add(curr);
 
 		// center
-        if(curr.getX() > 1 && curr.getX() < rLen - 1 &&
-           curr.getY() > 1 && curr.getY() < cLen - 1) { 
-	        addNeighbor(curr, grid[curr.getX() + 1][curr.getY()], false); // right
-	        addNeighbor(curr, grid[curr.getX() - 1][curr.getY()], false); // left
-	        addNeighbor(curr, grid[curr.getX()][curr.getY() + 1], false); // down
-        	addNeighbor(curr, grid[curr.getX()][curr.getY() - 1], false); // up
-        	addNeighbor(curr, grid[curr.getX() + 1][curr.getY() + 1], true); // bot right  
-        	addNeighbor(curr, grid[curr.getX() + 1][curr.getY() - 1], true); // upper right
-        	addNeighbor(curr, grid[curr.getX() - 1][curr.getY() + 1], true); // bot left
-        	addNeighbor(curr, grid[curr.getX() - 1][curr.getY() - 1], true); // upper left	        
-        } 
+		if(curr.getX() > 1 && curr.getX() < rLen - 1 &&
+		   curr.getY() > 1 && curr.getY() < cLen - 1) { 
+			addNeighbor(curr, grid[curr.getX() + 1][curr.getY()], false); // right
+			addNeighbor(curr, grid[curr.getX() - 1][curr.getY()], false); // left
+			addNeighbor(curr, grid[curr.getX()][curr.getY() + 1], false); // down
+			addNeighbor(curr, grid[curr.getX()][curr.getY() - 1], false); // up
+			addNeighbor(curr, grid[curr.getX() + 1][curr.getY() + 1], true); // bot right  
+			addNeighbor(curr, grid[curr.getX() + 1][curr.getY() - 1], true); // upper right
+			addNeighbor(curr, grid[curr.getX() - 1][curr.getY() + 1], true); // bot left
+			addNeighbor(curr, grid[curr.getX() - 1][curr.getY() - 1], true); // upper left	        
+		} 
 
-        // left edge
-        else if(curr.getX() == 1 && curr.getY() > 1 && curr.getY() < cLen - 1) {
-        	addNeighbor(curr, grid[curr.getX() + 1][curr.getY()], false); // right
-        	addNeighbor(curr, grid[curr.getX()][curr.getY() + 1], false); // down
-        	addNeighbor(curr, grid[curr.getX()][curr.getY() - 1], false); // up
-        	addNeighbor(curr, grid[curr.getX() + 1][curr.getY() + 1], true); // bot right
-        	addNeighbor(curr, grid[curr.getX() + 1][curr.getY() - 1], true); // upper right
-        }
+		// left edge
+		else if(curr.getX() == 1 && curr.getY() > 1 && curr.getY() < cLen - 1) {
+			addNeighbor(curr, grid[curr.getX() + 1][curr.getY()], false); // right
+			addNeighbor(curr, grid[curr.getX()][curr.getY() + 1], false); // down
+			addNeighbor(curr, grid[curr.getX()][curr.getY() - 1], false); // up
+			addNeighbor(curr, grid[curr.getX() + 1][curr.getY() + 1], true); // bot right
+			addNeighbor(curr, grid[curr.getX() + 1][curr.getY() - 1], true); // upper right
+		}
 
-        // top edge
+		// top edge
 		else if(curr.getY() == 1 && curr.getX() > 1 && curr.getX() < rLen - 1) { 
-        	addNeighbor(curr, grid[curr.getX() + 1][curr.getY()], false); // right
-        	addNeighbor(curr, grid[curr.getX() - 1][curr.getY()], false); // left
-        	addNeighbor(curr, grid[curr.getX()][curr.getY() + 1], false); // down
-        	addNeighbor(curr, grid[curr.getX() + 1][curr.getY() + 1], true); // bot right
-        	addNeighbor(curr, grid[curr.getX() - 1][curr.getY() + 1], true); // bot left
-        }
+			addNeighbor(curr, grid[curr.getX() + 1][curr.getY()], false); // right
+			addNeighbor(curr, grid[curr.getX() - 1][curr.getY()], false); // left
+			addNeighbor(curr, grid[curr.getX()][curr.getY() + 1], false); // down
+			addNeighbor(curr, grid[curr.getX() + 1][curr.getY() + 1], true); // bot right
+			addNeighbor(curr, grid[curr.getX() - 1][curr.getY() + 1], true); // bot left
+		}
 
-        // right edge
-        else if(curr.getX() == rLen - 1 && curr.getY() > 1 && curr.getY() < cLen - 1) {
-        	addNeighbor(curr, grid[curr.getX() - 1][curr.getY()], false); // left
-        	addNeighbor(curr, grid[curr.getX()][curr.getY() + 1], false); // down
-        	addNeighbor(curr, grid[curr.getX()][curr.getY() - 1], false); // up
-        	addNeighbor(curr, grid[curr.getX() - 1][curr.getY() + 1], true); // bot left
-        	addNeighbor(curr, grid[curr.getX() - 1][curr.getY() - 1], true); // upper left        	
-        }
+		// right edge
+		else if(curr.getX() == rLen - 1 && curr.getY() > 1 && curr.getY() < cLen - 1) {
+			addNeighbor(curr, grid[curr.getX() - 1][curr.getY()], false); // left
+			addNeighbor(curr, grid[curr.getX()][curr.getY() + 1], false); // down
+			addNeighbor(curr, grid[curr.getX()][curr.getY() - 1], false); // up
+			addNeighbor(curr, grid[curr.getX() - 1][curr.getY() + 1], true); // bot left
+			addNeighbor(curr, grid[curr.getX() - 1][curr.getY() - 1], true); // upper left        	
+		}
 
-        // bottom edge
-        else if(curr.getY() == cLen - 1 && curr.getX() > 1 && curr.getX() < rLen - 1) {
-        	addNeighbor(curr, grid[curr.getX() + 1][curr.getY()], false); // right
-        	addNeighbor(curr, grid[curr.getX() - 1][curr.getY()], false); // left
-        	addNeighbor(curr, grid[curr.getX()][curr.getY() - 1], false); // up
-        	addNeighbor(curr, grid[curr.getX() + 1][curr.getY() - 1], true); // upper right
-        	addNeighbor(curr, grid[curr.getX() - 1][curr.getY() - 1], true); // upper left
-        }
+		// bottom edge
+		else if(curr.getY() == cLen - 1 && curr.getX() > 1 && curr.getX() < rLen - 1) {
+			addNeighbor(curr, grid[curr.getX() + 1][curr.getY()], false); // right
+			addNeighbor(curr, grid[curr.getX() - 1][curr.getY()], false); // left
+			addNeighbor(curr, grid[curr.getX()][curr.getY() - 1], false); // up
+			addNeighbor(curr, grid[curr.getX() + 1][curr.getY() - 1], true); // upper right
+			addNeighbor(curr, grid[curr.getX() - 1][curr.getY() - 1], true); // upper left
+		}
 
-        // top left corner
-        else if(curr.getX() == 1 && curr.getY() == 1) {
-        	addNeighbor(curr, grid[curr.getX() + 1][curr.getY()], false); // right
-        	addNeighbor(curr, grid[curr.getX()][curr.getY() + 1], false); // down
-        	addNeighbor(curr, grid[curr.getX() + 1][curr.getY() + 1], true); // bot right
-        }
+		// top left corner
+		else if(curr.getX() == 1 && curr.getY() == 1) {
+			addNeighbor(curr, grid[curr.getX() + 1][curr.getY()], false); // right
+			addNeighbor(curr, grid[curr.getX()][curr.getY() + 1], false); // down
+			addNeighbor(curr, grid[curr.getX() + 1][curr.getY() + 1], true); // bot right
+		}
 
-        // top right corner
-        else if(curr.getX() == rLen - 1 && curr.getY() == 1) {
-        	addNeighbor(curr, grid[curr.getX() - 1][curr.getY()], false); // left
-        	addNeighbor(curr, grid[curr.getX()][curr.getY() + 1], false); // down
-        	addNeighbor(curr, grid[curr.getX() - 1][curr.getY() + 1], true); // bot left
-        }
+		// top right corner
+		else if(curr.getX() == rLen - 1 && curr.getY() == 1) {
+			addNeighbor(curr, grid[curr.getX() - 1][curr.getY()], false); // left
+			addNeighbor(curr, grid[curr.getX()][curr.getY() + 1], false); // down
+			addNeighbor(curr, grid[curr.getX() - 1][curr.getY() + 1], true); // bot left
+		}
 
-        // bottom right corner
-        else if(curr.getX() == rLen - 1 && curr.getY() == cLen - 1) {
-        	addNeighbor(curr, grid[curr.getX() - 1][curr.getY()], false); // left
-        	addNeighbor(curr, grid[curr.getX()][curr.getY() - 1], false); // up
-        	addNeighbor(curr, grid[curr.getX() - 1][curr.getY() - 1], true);  // upper left
-        }
+		// bottom right corner
+		else if(curr.getX() == rLen - 1 && curr.getY() == cLen - 1) {
+			addNeighbor(curr, grid[curr.getX() - 1][curr.getY()], false); // left
+			addNeighbor(curr, grid[curr.getX()][curr.getY() - 1], false); // up
+			addNeighbor(curr, grid[curr.getX() - 1][curr.getY() - 1], true);  // upper left
+		}
 
-        // bottom left corner
-        else if(curr.getX() ==  1 && curr.getY() == cLen - 1) {
-        	addNeighbor(curr, grid[curr.getX()][curr.getY() - 1], false); // up
-        	addNeighbor(curr, grid[curr.getX() + 1][curr.getY()], false); // right
-        	addNeighbor(curr, grid[curr.getX() + 1][curr.getY() - 1], true); // upper right
-        }
+		// bottom left corner
+		else if(curr.getX() ==  1 && curr.getY() == cLen - 1) {
+			addNeighbor(curr, grid[curr.getX()][curr.getY() - 1], false); // up
+			addNeighbor(curr, grid[curr.getX() + 1][curr.getY()], false); // right
+			addNeighbor(curr, grid[curr.getX() + 1][curr.getY() - 1], true); // upper right
+		}
 
-        Collections.sort(open, (n1, n2) -> {
-        	return n1.f() - n2.f();
-        });
+		Collections.sort(open, (n1, n2) -> {
+			return n1.f() - n2.f();
+		});
 
-        // maybe switch to priorityQueue
-        return open.remove(0);
+		// maybe switch to priorityQueue
+		return open.remove(0);
 	}
 
 	public static void addNeighbor(Node curr, Node neighbor, boolean diagonal) {
@@ -199,8 +198,8 @@ public class AStar {
 			neighbor.setCost(COST + curr.cost());
 		}
 
-	    if(!open.contains(neighbor))
-	    	neighbor.setPrevious(curr);
+		if(!open.contains(neighbor))
+			neighbor.setPrevious(curr);
 
 	    open.add(neighbor);
 	}
