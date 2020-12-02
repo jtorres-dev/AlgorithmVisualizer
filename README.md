@@ -1,6 +1,5 @@
-# Pathfinding Visualizer #
-This directory contains `AStar.java`, `Node.java`, `Sorter.java`, and `SorterTester.java`. Eventually, sorting algorithms will be added to be visualized and the name of this repository will change.
-
+# Algorithm Visualizer #
+This directory contains `AStar.java`, `Node.java`, `Sorter.java`, and `SorterTester.java`.
 # Contents: #
 - `AStar.java`: A pathfinding algorithm that has hard-defined values and will eventually become much more flexible. In the early stages of working and needs minor improvements for structure.
 - `Node.java`: A `Node` object to be represented in grid elements for `AStar.java`.
