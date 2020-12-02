@@ -1,9 +1,9 @@
-import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Stack;
+import java.util.Collections;
 
 
 public class AStar {
@@ -20,21 +20,21 @@ public class AStar {
 	/*	
 	    createGrid(7):
 
-	    x-axis
-		    1   2   3   4   5   6  
-	y-axis    +-----------------------+
-		1 |   |   |   |   |   |   |
-		  |---+---+---+---+---+---|
-		2 |   |   |   |   |   |   |
-		  |---+---+---+---+---+---|
-		3 |   |   |   |   |   |   |
-		  |---+---+---+---+---+---|
-		4 |   |   |   |   |   |   |
-		  |---+---+---+---+---+---|
-		5 |   |   |   |   |   |   |
-		  |---+---+---+---+---+---|
-		6 |   |   |   |   |   |   |
-		  +-----------------------+
+		    x-axis
+    		    1   2   3   4   5   6  
+    y-axis    +-----------------------+
+			1 |   |   |   |   |   |   |
+			  |---+---+---+---+---+---|
+			2 |   |   |   |   |   |   |
+			  |---+---+---+---+---+---|
+			3 |   |   |   |   |   |   |
+			  |---+---+---+---+---+---|
+			4 |   |   |   |   |   |   |
+			  |---+---+---+---+---+---|
+			5 |   |   |   |   |   |   |
+			  |---+---+---+---+---+---|
+			6 |   |   |   |   |   |   |
+			  +-----------------------+
 	   
 	*/
 	public static void createGrid(int size) {

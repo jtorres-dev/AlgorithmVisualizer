@@ -28,28 +28,18 @@ public class Node {
 
 
 
-	public void setHeuristic(int heuristic) {
-		this.heuristic = heuristic;
-	}
+	public void setHeuristic(int heuristic) { this.heuristic = heuristic; }
 
-	public void setCost(int cost) {
-		this.cost = cost;
-	}
+	public void setCost(int cost) { this.cost = cost; }
 	
-	public void setPrevious(Node prev) {
-		this.prev = prev;
-	}
+	public void setPrevious(Node prev) { this.prev = prev; }
 	
-	public void setWall() {
-		isWall = true;
-	}
+	public void setWall() { isWall = true; }
 
-	public boolean sameLocation(Node other) {
-		return getX() == other.getX() && getY() == other.getY();
-	}
+
+
+	public boolean sameLocation(Node other) { return getX() == other.getX() && getY() == other.getY(); }
 
 	@Override
-	public String toString() {
-		return "(" + x + ", " + y + ")";
-	}
+	public String toString() { return "(" + x + ", " + y + ")"; }
 }

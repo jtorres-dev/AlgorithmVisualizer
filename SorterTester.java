@@ -5,31 +5,24 @@ import java.util.ArrayList;
 public class SorterTester {
 
 	public static void main(String[] args) {
-		sortRandomRange(100);
+		sortRandomRange(100, 10000);
 	}
 
-	public static void sortRandomRange(int n) {
+	public static void sortRandomRange(int n, int maxValue) {
 		Sorter<Integer> sorter = new Sorter<Integer>();
 		List<Integer> list = new ArrayList<Integer>();
 
 		for(int i = 0; i < n; i++) 
 			if(i % 2 == 0)
-				list.add((int) (Math.random() * 100));
+				list.add((int) (Math.random() * maxValue));
 			else
-				list.add((int) (Math.random() * -100));
+				list.add((int) (Math.random() * -maxValue));
 
-
-		System.out.print("[ ");
-		for(int i = 0; i < list.size(); i++)
-			System.out.print(list.get(i) + ", ");		
-		System.out.println("]\n");
-
+		System.out.println(list + "\n");
 
 		sorter.mergeSort(list);
 
-		System.out.print("[ ");
-		for(int i = 0; i < list.size(); i++)
-			System.out.print(list.get(i) + ", ");
-		System.out.println("]\n");
+		System.out.println(list);
 	}
+
 }
