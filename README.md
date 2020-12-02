@@ -9,4 +9,4 @@ This directory contains `AStar.java`, `Node.java`, `Sorter.java`, and `SorterTes
 # Improvements: #
 - `AStar.java`: 
    - [ ] (Optional) Implement recursion/double for loop to accomplish searching for neighbors.
-   - [ ] Create a visualization for the algorithm in *JavaFX*.
+   - [ ] Create a visualization for the algorithm in *JavaFX*; Include CSS for styling.
