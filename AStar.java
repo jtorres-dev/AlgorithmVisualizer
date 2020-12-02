@@ -35,7 +35,7 @@ public class AStar {
 			  |---+---+---+---+---+---|
 			6 |   |   |   |   |   |   |
 			  +-----------------------+
-	   
+
 	*/
 	public static void createGrid(int size) {
 		grid = new Node[size][size];
