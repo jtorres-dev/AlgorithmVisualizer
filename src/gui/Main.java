@@ -1,7 +1,6 @@
 package gui;
 
 import javafx.application.Application;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ColorPicker;
@@ -9,6 +8,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -29,16 +29,17 @@ public class Main extends Application {
     private final int H_RES = 1280;
     private final int V_RES = 720;
     private final Color BACKGROUND = Color.BLACK; // Not working
+    private int size;
 
     @Override
     public void start(Stage stage) throws Exception {
         stage.setTitle("Algorithm Visualizer");
         stage.setResizable(false);
 
+        // scene creations
         homeScene = createHomeScene(stage);
             pathfindScene = createPathfindScene(stage);
                 aStarSettings = createAStarSettings(stage);
-                    aStarScene = createAStarScene(stage);
 
             sortingScene = createSortingScene(stage);
 
@@ -55,13 +56,16 @@ public class Main extends Application {
 
         sortingButton.setOnAction(event -> stage.setScene(sortingScene));
         pathfindButton.setOnAction(event -> stage.setScene(pathfindScene));
+        // potentially change to GridPane
         StackPane homeLayout = new StackPane();
 
         homeLayout.getChildren().addAll(homeTitle, pathfindButton, sortingButton, name);
-        homeLayout.setMargin(homeTitle, new Insets(-250, 0, 0, 0));
+
+        /*                                  Insets(top, right, bottom, left) */
+        homeLayout.setMargin(homeTitle, new Insets(0, 0, 250, 0));
         homeLayout.setMargin(pathfindButton, new Insets(50, 0, 0, 0));
         homeLayout.setMargin(sortingButton, new Insets(150, 0, 0, 0));
-        homeLayout.setMargin(name, new Insets(675, -1100, 0, 0));
+        homeLayout.setMargin(name, new Insets(675, 0, 0, 1100));
 
         BorderPane mainPane = new BorderPane();
         mainPane.setCenter(homeLayout);
@@ -80,10 +84,10 @@ public class Main extends Application {
         StackPane pathfindLayout = new StackPane();
 
         pathfindLayout.getChildren().addAll(pathfindTitle, aStarButton, homeButton, name);
-        pathfindLayout.setMargin(pathfindTitle, new Insets(-250, 0, 0, 0));
-        pathfindLayout.setMargin(aStarButton, new Insets(50, 0, 0, 0));
-        pathfindLayout.setMargin(homeButton, new Insets(150, 0, 0, 0));
-        pathfindLayout.setMargin(name, new Insets(675, -1100, 0, 0));
+        pathfindLayout.setMargin(pathfindTitle,  new Insets(0, 0, 250, 0));
+        pathfindLayout.setMargin(aStarButton,  new Insets(50, 0, 0, 0));
+        pathfindLayout.setMargin(homeButton,  new Insets(150, 0, 0, 0));
+        pathfindLayout.setMargin(name,  new Insets(675, 0, 0, 1100));
 
         BorderPane pathfindPane = new BorderPane();
         pathfindPane.setCenter(pathfindLayout);
@@ -123,11 +127,21 @@ public class Main extends Application {
 
         Button nextButton = new Button("Start");
         nextButton.setAlignment(Pos.BOTTOM_RIGHT);
-        nextButton.setOnAction(event -> stage.setScene(aStarScene));
+        nextButton.setDisable(true);
         gridPane.add(nextButton, 2, 5);
+
+        nextButton.setOnAction(event ->  {
+            aStarScene = createAStarScene(stage);
+            stage.setScene(aStarScene);
+        });
 
         ComboBox<String> gridSizes = createGridOptions();
         gridPane.add(gridSizes, 1, 1);
+
+        gridSizes.setOnAction(event -> {
+            setGridSize(gridSizes.getValue());
+            nextButton.setDisable(false);
+        });
 
         ColorPicker startColor = new ColorPicker();
         startColor.setValue(Color.BLUE);
@@ -146,6 +160,7 @@ public class Main extends Application {
 
         return new Scene(settingsPane, H_RES, V_RES, BACKGROUND);
     }
+
     private ComboBox<String> createGridOptions() {
         ComboBox<String> gridSizes = new ComboBox<>();
         gridSizes.setPromptText("Choose a grid size");
@@ -156,34 +171,94 @@ public class Main extends Application {
                 "17 x 17", "18 x 18", "19 x 19", "20 x 20"
         );
 
-//        String response = gridSizes.getValue();
-//        int size = 0;
-//
-//        // used for AStar construction later
-//        if(response != null) {
-//            switch (response) {
-//                case "5 x 5": size = 6;
-//                    break;
-//                case "6 x 6": size = 7;
-//                    break;
-//                case "7 x 7": size = 8;
-//                    break;
-//                case "8 x 8": size = 9;
-//                    break;
-//                case "9 x 9": size = 10;
-//                    break;
-//                case "10 x 10": size = 11;
-//                    break;
-//                default: size = 6;
-//                    break;
-//            }
-//        }
-        //        gridSizes.setOnAction(event -> System.out.println("User selected: " + gridSizes.getValue()));
         return gridSizes;
     }
 
+    private void setGridSize(String response) {
+
+        /* TODO:
+           Using a space delimiter to tokenize response
+           and grabbing the first int could be cleaner code.
+           Better scalability as well.
+        */
+        switch (response) {
+            case "5 x 5": size = 5;
+                break;
+            case "6 x 6": size = 6;
+                break;
+            case "7 x 7": size = 7;
+                break;
+            case "8 x 8": size = 8;
+                break;
+            case "9 x 9": size = 9;
+                break;
+            case "10 x 10": size = 10;
+                break;
+            case "11 x 11": size = 11;
+                break;
+            case "12 x 12": size = 12;
+                break;
+            case "13 x 13": size = 13;
+                break;
+            case "14 x 14": size = 14;
+                break;
+            case "15 x 15": size = 15;
+                break;
+            case "16 x 16": size = 16;
+                break;
+            case "17 x 17": size = 17;
+                break;
+            case "18 x 18": size = 18;
+                break;
+            case "19 x 19": size = 19;
+                break;
+            case "20 x 20": size = 20;
+                break;
+            default: size = 5;
+                break;
+        }
+    }
+
+    // for loop is going to create different objects. If
+    // tiles are not different objects, Children duplication
+    // related exceptions get thrown.
+    private class Tile extends StackPane {
+        Tile(double width) {
+            Rectangle border = new Rectangle(width, width);
+            border.setFill(null);
+            border.setStroke(Color.BLACK);
+
+            setAlignment(Pos.CENTER);
+            getChildren().addAll(border);
+        }
+    }
+
     private Scene createAStarScene(Stage stage) {
+        Button backButton = new Button("Back");
+        backButton.setAlignment(Pos.BOTTOM_LEFT);
+        backButton.setOnAction(event -> stage.setScene(aStarSettings));
+
         BorderPane aStarPane = new BorderPane();
+        HBox hbox = new HBox(40);
+        hbox.getChildren().add(backButton);
+        hbox.setPadding(new Insets(20, 20, 30, 40));
+        aStarPane.setBottom(hbox);
+        // temp
+        int squareSize = 40;
+
+
+        // if you select 12 x 12, the program no longer goes back
+        for(int i = 0; i < size; i++) {
+            for(int j = 0; j < size; j++) {
+                Tile tile = new Tile(squareSize);
+                tile.setAlignment(Pos.CENTER);
+                tile.setPadding(new Insets(475, 0, 0, 1100));
+                tile.setTranslateX(j * squareSize);
+                tile.setTranslateY(i * squareSize);
+                aStarPane.getChildren().add(tile);
+            }
+        }
+
         return new Scene(aStarPane, H_RES, V_RES, BACKGROUND);
     }
 
