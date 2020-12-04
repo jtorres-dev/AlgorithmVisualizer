@@ -1,7 +1,12 @@
 package pathfinding;
 
-import java.util.*;
-
+import java.util.List;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Stack;
 
 public class AStar {
 
@@ -14,7 +19,6 @@ public class AStar {
 	// sqrt(2) * 10
 	private final int COST = 10;
 	private final int DIAGONAL_COST = 14;
-
 
 	public AStar(int gridSize, Node start, Node end, int[][] walls) {
 		createGrid(gridSize);
@@ -118,8 +122,7 @@ public class AStar {
 			bottomLeft.setDiagonal(true);
 			upperLeft.setDiagonal(true);
 
-			List<Node> neighbors = new ArrayList<>();
-			Collections.addAll(neighbors, right, down, left, up, upperRight, bottomRight, bottomLeft, upperLeft);
+			List<Node> neighbors = Arrays.asList(right, down, left, up, upperRight, bottomRight, bottomLeft, upperLeft);
 
 			for(Node neighbor : neighbors) {
 				if(neighbor.sameLocation(end)) {
@@ -141,8 +144,7 @@ public class AStar {
 			upperRight.setDiagonal(true);
 			bottomRight.setDiagonal(true);
 
-			List<Node> neighbors = new ArrayList<>();
-			Collections.addAll(neighbors, right, down, up, upperRight, bottomRight);
+			List<Node> neighbors = Arrays.asList(right, down, up, upperRight, bottomRight);
 
 			for(Node neighbor : neighbors) {
 				if(neighbor.sameLocation(end)) {
@@ -164,8 +166,7 @@ public class AStar {
 			bottomRight.setDiagonal(true);
 			bottomLeft.setDiagonal(true);
 
-			List<Node> neighbors = new ArrayList<>();
-			Collections.addAll(neighbors, right, down, left, bottomRight, bottomLeft);
+			List<Node> neighbors = Arrays.asList(right, down, left, bottomRight, bottomLeft);
 
 			for(Node neighbor : neighbors) {
 				if(neighbor.sameLocation(end)) {
@@ -182,13 +183,12 @@ public class AStar {
 			Node left  = grid[curr.getX() - 1][curr.getY()];
 			Node up    = grid[curr.getX()][curr.getY() - 1];
 
-			Node bottomLeft  = grid[curr.getX() - 1][curr.getY() + 1];
-			Node upperLeft   = grid[curr.getX() - 1][curr.getY() - 1];
+			Node bottomLeft = grid[curr.getX() - 1][curr.getY() + 1];
+			Node upperLeft  = grid[curr.getX() - 1][curr.getY() - 1];
 			bottomLeft.setDiagonal(true);
 			upperLeft.setDiagonal(true);
 
-			List<Node> neighbors = new ArrayList<>();
-			Collections.addAll(neighbors, down, left, up, bottomLeft, upperLeft);
+			List<Node> neighbors = Arrays.asList(down, left, up, bottomLeft, upperLeft);
 
 			for(Node neighbor : neighbors) {
 				if(neighbor.sameLocation(end)) {
@@ -205,13 +205,12 @@ public class AStar {
 			Node left  = grid[curr.getX() - 1][curr.getY()];
 			Node up    = grid[curr.getX()][curr.getY() - 1];
 
-			Node upperRight  = grid[curr.getX() + 1][curr.getY() - 1];
-			Node upperLeft   = grid[curr.getX() - 1][curr.getY() - 1];
+			Node upperRight = grid[curr.getX() + 1][curr.getY() - 1];
+			Node upperLeft  = grid[curr.getX() - 1][curr.getY() - 1];
 			upperRight.setDiagonal(true);
 			upperLeft.setDiagonal(true);
 
-			List<Node> neighbors = new ArrayList<>();
-			Collections.addAll(neighbors, right, left, up, upperRight, upperLeft);
+			List<Node> neighbors = Arrays.asList(right, left, up, upperRight, upperLeft);
 
 			for(Node neighbor : neighbors) {
 				if(neighbor.sameLocation(end)) {
@@ -230,8 +229,7 @@ public class AStar {
 			Node bottomRight = grid[curr.getX() + 1][curr.getY() + 1];
 			bottomRight.setDiagonal(true);
 
-			List<Node> neighbors = new ArrayList<>();
-			Collections.addAll(neighbors, right, down, bottomRight);
+			List<Node> neighbors = Arrays.asList(right, down, bottomRight);
 
 			for(Node neighbor : neighbors) {
 				if(neighbor.sameLocation(end)) {
@@ -250,8 +248,7 @@ public class AStar {
 			Node bottomLeft = grid[curr.getX() - 1][curr.getY() + 1];
 			bottomLeft.setDiagonal(true);
 
-			List<Node> neighbors = new ArrayList<>();
-			Collections.addAll(neighbors, down, left, bottomLeft);
+			List<Node> neighbors = Arrays.asList(down, left, bottomLeft);
 
 			for(Node neighbor : neighbors) {
 				if(neighbor.sameLocation(end)) {
@@ -270,8 +267,7 @@ public class AStar {
 			Node upperLeft = grid[curr.getX() - 1][curr.getY() - 1];
 			upperLeft.setDiagonal(true);
 
-			List<Node> neighbors = new ArrayList<>();
-			Collections.addAll(neighbors, left, up, upperLeft);
+			List<Node> neighbors = Arrays.asList(left, up, upperLeft);
 
 			for(Node neighbor : neighbors) {
 				if(neighbor.sameLocation(end)) {
@@ -287,11 +283,10 @@ public class AStar {
 			Node right = grid[curr.getX() + 1][curr.getY()];
 			Node up    = grid[curr.getX()][curr.getY() - 1];
 
-			Node upperRight  = grid[curr.getX() + 1][curr.getY() - 1];
+			Node upperRight = grid[curr.getX() + 1][curr.getY() - 1];
 			upperRight.setDiagonal(true);
 
-			List<Node> neighbors = new ArrayList<>();
-			Collections.addAll(neighbors, right, up, upperRight);
+			List<Node> neighbors = Arrays.asList(right, up, upperRight);
 
 			for(Node neighbor : neighbors) {
 				if(neighbor.sameLocation(end)) {
@@ -303,7 +298,7 @@ public class AStar {
 		}
 
 		/* sorts by Node's f() value */
-		Collections.sort(open, Comparator.comparingInt(Node::f));
+		open.sort(Comparator.comparingInt(Node::f));
 
 		// maybe switch to priorityQueue
 		return open.remove(0);
@@ -359,19 +354,17 @@ public class AStar {
 			Node n = stack.pop();
 			if(n.sameLocation(start)) {
 				System.out.println("Shortest Path: ");
-				System.out.println("Start Node: " + n);
-				System.out.println();
+				System.out.println("Start Node: " + n + "\n");
 			}
-			else if(n.sameLocation(end)) {
-				System.out.println("End Node: " + n);
-				System.out.println();
-			}
+
+			else if(n.sameLocation(end))
+				System.out.println("End Node: " + n + "\n");
+
 			else {
 				System.out.println("Path Node: " + n);
 				System.out.println("Cost: " + n.cost());
 				System.out.println("Heuristic: " + n.heuristic());
-				System.out.println("f: " + n.f());
-				System.out.println();
+				System.out.println("f: " + n.f() + "\n");
 			}
 		}
 	}
