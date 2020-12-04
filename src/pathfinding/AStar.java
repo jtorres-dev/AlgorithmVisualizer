@@ -30,7 +30,7 @@ public class AStar {
 	/*	
 	    createGrid(6):
 
-		    x-axis
+          x-axis
                 1   2   3   4   5   6  
    y-axis     +-----------------------+
             1 |   |   |   |   |   |   |
