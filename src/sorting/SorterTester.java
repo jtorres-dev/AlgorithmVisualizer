@@ -20,7 +20,7 @@ public class SorterTester {
 
 		System.out.println(list + "\n");
 
-		sorter.mergeSort(list);
+		Sorter.mergeSort(list);
 
 		System.out.println(list);
 	}

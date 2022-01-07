@@ -10,29 +10,29 @@ import java.util.Stack;
 
 public class AStar {
 
-	private Node[][] grid;
-	private Node start, end;
+  private Node[][] grid;
+  private Node start, end;
 
-	private List<Node> open;
-	private Set<Node> closed;
+  private List<Node> open;
+  private Set<Node> closed;
 
-	// sqrt(2) * 10
-	private final int COST = 10;
-	private final int DIAGONAL_COST = 14;
+  // sqrt(2) * 10
+  private final int COST = 10;
+  private final int DIAGONAL_COST = 14;
 
-	public AStar(int gridSize, Node start, Node end, int[][] walls) {
-		createGrid(gridSize);
-		this.start = start;
-		this.end = end;
-		setWallNodes(walls);
-		calculateHeuristics(end);
+  public AStar(int gridSize, Node start, Node end, int[][] walls) {
+    createGrid(gridSize);
+    this.start = start;
+    this.end = end;
+    setWallNodes(walls);
+    calculateHeuristics(end);
 
-		open = new ArrayList<>();
-		closed = new HashSet<>();
-	}
+    open = new ArrayList<>();
+    closed = new HashSet<>();
+  }
 
-	/*	
-	    createGrid(6):
+  /*
+      createGrid(6):
 
           x-axis
                 1   2   3   4   5   6  
@@ -50,322 +50,277 @@ public class AStar {
             6 |   |   |   |   |   |   |
               +-----------------------+
 
-	*/
-	private void createGrid(int size) {
-		grid = new Node[size + 1][size + 1];
-		for(int i = 1; i < grid.length; i++) {
-			for(int j = 1; j < grid[0].length; j++) {
-				grid[i][j] = new Node(i, j);
-			}
-		}
-	}
+  */
+  private void createGrid(int size) {
+    grid = new Node[size + 1][size + 1];
+    for(int i = 1; i < grid.length; i++) {
+      for(int j = 1; j < grid[0].length; j++) {
+        grid[i][j] = new Node(i, j);
+      }
+    }
+  }
 
-	private void setWallNodes(int[][] coords) {
-		for(int[] coord : coords)
-			grid[coord[0]][coord[1]].setWall(true);
-	}
+  private void setWallNodes(int[][] coords) {
+    for(int[] coord : coords)
+      grid[coord[0]][coord[1]].setWall(true);
+  }
 
-	// Manhattan format
-	private void calculateHeuristics(Node end) {
-		for(int i = 1; i < grid.length; i++) {
-			for(int j = 1; j < grid[0].length; j++) {
-				if(grid[i][j].isWall())
-					continue;
+  // Manhattan format
+  private void calculateHeuristics(Node end) {
+    for(int i = 1; i < grid.length; i++) {
+      for(int j = 1; j < grid[0].length; j++) {
+        if(grid[i][j].isWall())
+          continue;
 
-				int dx = 0;
-				int dy = 0;
+        int dx = 0;
+        int dy = 0;
 
-				if(i < end.getX())
-					dx = end.getX() - i;
-				
-				else if(i > end.getX())
-					dx = i - end.getX();
+        if(i < end.getX())
+          dx = end.getX() - i;
 
-				if(j < end.getY())
-					dy = end.getY() - j;
+        else if(i > end.getX())
+          dx = i - end.getX();
 
-				else if(j > end.getY())
-					dy = j - end.getY();
-				
-				grid[i][j].setHeuristic(dx + dy);
-			}
-		}
-	}
+        if(j < end.getY())
+          dy = end.getY() - j;
 
-	/*
-		I'll assume there is a more elegant way of doing this
-		TODO:
-		 - Improvements: maybe a double for loop? recursion? ...	
-	*/
-	private Node findBestNeighbor(Node curr) {
-		int width = grid.length;
-		int height = grid[0].length;
+        else if(j > end.getY())
+          dy = j - end.getY();
 
-		closed.add(curr);
+        grid[i][j].setHeuristic(dx + dy);
+      }
+    }
+  }
 
-		// center node
-		if(curr.getX() > 1 && curr.getX() < width - 1 &&
-		   curr.getY() > 1 && curr.getY() < height - 1) {
+  private String typeOfNode(Node curr) {
+    int width = grid.length;
+    int height = grid[0].length;
 
-			Node right = grid[curr.getX() + 1][curr.getY()];
-			Node down  = grid[curr.getX()][curr.getY() + 1];
-			Node left  = grid[curr.getX() - 1][curr.getY()];
-			Node up    = grid[curr.getX()][curr.getY() - 1];
+    if(curr.getX() > 1 && curr.getX() < width - 1 &&
+       curr.getY() > 1 && curr.getY() < height - 1)
+      return "Center Node";
 
-			Node upperRight  = grid[curr.getX() + 1][curr.getY() - 1];
-			Node bottomRight = grid[curr.getX() + 1][curr.getY() + 1];
-			Node bottomLeft  = grid[curr.getX() - 1][curr.getY() + 1];
-			Node upperLeft   = grid[curr.getX() - 1][curr.getY() - 1];
+    else if(curr.getX() == 1 && curr.getY() > 1 &&
+            curr.getY() < height - 1)
+      return "Left Edge Node";
 
-			upperRight.setDiagonal(true);
-			bottomRight.setDiagonal(true);
-			bottomLeft.setDiagonal(true);
-			upperLeft.setDiagonal(true);
+    else if(curr.getY() == 1 && curr.getX() > 1 &&
+            curr.getX() < width - 1)
+      return "Top Edge Node";
 
-			List<Node> neighbors = Arrays.asList(right, down, left, up, upperRight, bottomRight, bottomLeft, upperLeft);
+    else if(curr.getX() == width - 1 && curr.getY() > 1 &&
+            curr.getY() < height - 1)
+      return "Right Edge Node";
 
-			for(Node neighbor : neighbors) {
-				if(neighbor.sameLocation(end)) {
-					neighbor.setPrevious(curr);
-					return neighbor;
-				}
-				addNeighbor(curr, neighbor);
-			}
-		}
+    else if(curr.getY() == height - 1 && curr.getX() > 1 &&
+            curr.getX() < width - 1)
+      return "Bottom Edge Node";
 
-		// left edge node
-		else if(curr.getX() == 1 && curr.getY() > 1 && curr.getY() < height - 1) {
-			Node right = grid[curr.getX() + 1][curr.getY()];
-			Node down  = grid[curr.getX()][curr.getY() + 1];
-			Node up    = grid[curr.getX()][curr.getY() - 1];
+    else if(curr.getX() == 1 &&
+            curr.getY() == 1)
+      return "Top Left Corner Node";
 
-			Node upperRight  = grid[curr.getX() + 1][curr.getY() - 1];
-			Node bottomRight = grid[curr.getX() + 1][curr.getY() + 1];
-			upperRight.setDiagonal(true);
-			bottomRight.setDiagonal(true);
+    else if(curr.getX() == width - 1 &&
+            curr.getY() == 1)
+      return "Top Right Corner Node";
 
-			List<Node> neighbors = Arrays.asList(right, down, up, upperRight, bottomRight);
+    else if(curr.getX() == width - 1 &&
+            curr.getY() == height - 1)
+      return "Bottom Right Corner Node";
 
-			for(Node neighbor : neighbors) {
-				if(neighbor.sameLocation(end)) {
-					neighbor.setPrevious(curr);
-					return neighbor;
-				}
-				addNeighbor(curr, neighbor);
-			}
-		}
+    else return "Bottom Left Corner Node";
+  }
 
-		// top edge node
-		else if(curr.getY() == 1 && curr.getX() > 1 && curr.getX() < width - 1) {
-			Node right = grid[curr.getX() + 1][curr.getY()];
-			Node down  = grid[curr.getX()][curr.getY() + 1];
-			Node left  = grid[curr.getX() - 1][curr.getY()];
+  private Node findBestNeighbor(Node curr) {
+    Node right, down, left, up, upperRight, bottomRight, bottomLeft, upperLeft;
+    List<Node> neighbors = new ArrayList<>();
 
-			Node bottomRight = grid[curr.getX() + 1][curr.getY() + 1];
-			Node bottomLeft  = grid[curr.getX() - 1][curr.getY() + 1];
-			bottomRight.setDiagonal(true);
-			bottomLeft.setDiagonal(true);
+    closed.add(curr);
 
-			List<Node> neighbors = Arrays.asList(right, down, left, bottomRight, bottomLeft);
+    String typeOfNode = typeOfNode(curr);
+    switch(typeOfNode) {
+      case "Center Node":
+        right = grid[curr.getX() + 1][curr.getY()];
+        down  = grid[curr.getX()][curr.getY() + 1];
+        left  = grid[curr.getX() - 1][curr.getY()];
+        up    = grid[curr.getX()][curr.getY() - 1];
+        upperRight  = grid[curr.getX() + 1][curr.getY() - 1];
+        bottomRight = grid[curr.getX() + 1][curr.getY() + 1];
+        bottomLeft  = grid[curr.getX() - 1][curr.getY() + 1];
+        upperLeft   = grid[curr.getX() - 1][curr.getY() - 1];
 
-			for(Node neighbor : neighbors) {
-				if(neighbor.sameLocation(end)) {
-					neighbor.setPrevious(curr);
-					return neighbor;
-				}
-				addNeighbor(curr, neighbor);
-			}
-		}
+        upperRight.setDiagonal(true);
+        bottomRight.setDiagonal(true);
+        bottomLeft.setDiagonal(true);
+        upperLeft.setDiagonal(true);
 
-		// right edge node
-		else if(curr.getX() == width - 1 && curr.getY() > 1 && curr.getY() < height - 1) {
-			Node down  = grid[curr.getX()][curr.getY() + 1];
-			Node left  = grid[curr.getX() - 1][curr.getY()];
-			Node up    = grid[curr.getX()][curr.getY() - 1];
+        neighbors = Arrays.asList(
+          right, down, left, up, upperRight,
+          bottomRight, bottomLeft, upperLeft
+        );
+        break;
 
-			Node bottomLeft = grid[curr.getX() - 1][curr.getY() + 1];
-			Node upperLeft  = grid[curr.getX() - 1][curr.getY() - 1];
-			bottomLeft.setDiagonal(true);
-			upperLeft.setDiagonal(true);
+      case "Left Edge Node":
+        right = grid[curr.getX() + 1][curr.getY()];
+        down  = grid[curr.getX()][curr.getY() + 1];
+        up    = grid[curr.getX()][curr.getY() - 1];
+        upperRight  = grid[curr.getX() + 1][curr.getY() - 1];
+        bottomRight = grid[curr.getX() + 1][curr.getY() + 1];
 
-			List<Node> neighbors = Arrays.asList(down, left, up, bottomLeft, upperLeft);
+        upperRight.setDiagonal(true);
+        bottomRight.setDiagonal(true);
+        neighbors = Arrays.asList(right, down, up, upperRight, bottomRight);
+        break;
 
-			for(Node neighbor : neighbors) {
-				if(neighbor.sameLocation(end)) {
-					neighbor.setPrevious(curr);
-					return neighbor;
-				}
-				addNeighbor(curr, neighbor);
-			}
-		}
+      case "Top Edge Node":
+        right = grid[curr.getX() + 1][curr.getY()];
+        down  = grid[curr.getX()][curr.getY() + 1];
+        left  = grid[curr.getX() - 1][curr.getY()];
+        bottomRight = grid[curr.getX() + 1][curr.getY() + 1];
+        bottomLeft  = grid[curr.getX() - 1][curr.getY() + 1];
 
-		// bottom edge node
-		else if(curr.getY() == height - 1 && curr.getX() > 1 && curr.getX() < width - 1) {
-			Node right = grid[curr.getX() + 1][curr.getY()];
-			Node left  = grid[curr.getX() - 1][curr.getY()];
-			Node up    = grid[curr.getX()][curr.getY() - 1];
+        bottomRight.setDiagonal(true);
+        bottomLeft.setDiagonal(true);
+        neighbors = Arrays.asList(right, down, left, bottomRight, bottomLeft);
+        break;
 
-			Node upperRight = grid[curr.getX() + 1][curr.getY() - 1];
-			Node upperLeft  = grid[curr.getX() - 1][curr.getY() - 1];
-			upperRight.setDiagonal(true);
-			upperLeft.setDiagonal(true);
+      case "Right Edge Node":
+        down  = grid[curr.getX()][curr.getY() + 1];
+        left  = grid[curr.getX() - 1][curr.getY()];
+        up    = grid[curr.getX()][curr.getY() - 1];
+        bottomLeft  = grid[curr.getX() - 1][curr.getY() + 1];
+        upperLeft   = grid[curr.getX() - 1][curr.getY() - 1];
 
-			List<Node> neighbors = Arrays.asList(right, left, up, upperRight, upperLeft);
+        bottomLeft.setDiagonal(true);
+        upperLeft.setDiagonal(true);
+        neighbors = Arrays.asList(down, left, up, bottomLeft, upperLeft);
+        break;
 
-			for(Node neighbor : neighbors) {
-				if(neighbor.sameLocation(end)) {
-					neighbor.setPrevious(curr);
-					return neighbor;
-				}
-				addNeighbor(curr, neighbor);
-			}
-		}
+      case "Bottom Edge Node":
+        right = grid[curr.getX() + 1][curr.getY()];
+        left  = grid[curr.getX() - 1][curr.getY()];
+        up    = grid[curr.getX()][curr.getY() - 1];
+        upperRight  = grid[curr.getX() + 1][curr.getY() - 1];
+        upperLeft   = grid[curr.getX() - 1][curr.getY() - 1];
 
-		// top left corner node
-		else if(curr.getX() == 1 && curr.getY() == 1) {
-			Node right = grid[curr.getX() + 1][curr.getY()];
-			Node down  = grid[curr.getX()][curr.getY() + 1];
+        upperRight.setDiagonal(true);
+        upperLeft.setDiagonal(true);
+        neighbors = Arrays.asList(right, left, up, upperRight, upperLeft);
+        break;
 
-			Node bottomRight = grid[curr.getX() + 1][curr.getY() + 1];
-			bottomRight.setDiagonal(true);
+      case "Top Left Corner Node":
+        right = grid[curr.getX() + 1][curr.getY()];
+        down  = grid[curr.getX()][curr.getY() + 1];
+        bottomRight = grid[curr.getX() + 1][curr.getY() + 1];
 
-			List<Node> neighbors = Arrays.asList(right, down, bottomRight);
+        bottomRight.setDiagonal(true);
+        neighbors = Arrays.asList(right, down, bottomRight);
+        break;
 
-			for(Node neighbor : neighbors) {
-				if(neighbor.sameLocation(end)) {
-					neighbor.setPrevious(curr);
-					return neighbor;
-				}
-				addNeighbor(curr, neighbor);
-			}
-		}
+      case "Top Right Corner Node":
+        down  = grid[curr.getX()][curr.getY() + 1];
+        left  = grid[curr.getX() - 1][curr.getY()];
+        bottomLeft = grid[curr.getX() - 1][curr.getY() + 1];
 
-		// top right corner node
-		else if(curr.getX() == width - 1 && curr.getY() == 1) {
-			Node down = grid[curr.getX()][curr.getY() + 1];
-			Node left = grid[curr.getX() - 1][curr.getY()];
+        bottomLeft.setDiagonal(true);
+        neighbors = Arrays.asList(down, left, bottomLeft);
+        break;
 
-			Node bottomLeft = grid[curr.getX() - 1][curr.getY() + 1];
-			bottomLeft.setDiagonal(true);
+      case "Bottom Right Corner Node":
+        left = grid[curr.getX() - 1][curr.getY()];
+        up   = grid[curr.getX()][curr.getY() - 1];
+        upperLeft = grid[curr.getX() - 1][curr.getY() - 1];
 
-			List<Node> neighbors = Arrays.asList(down, left, bottomLeft);
+        upperLeft.setDiagonal(true);
+        neighbors = Arrays.asList(left, up, upperLeft);
+        break;
 
-			for(Node neighbor : neighbors) {
-				if(neighbor.sameLocation(end)) {
-					neighbor.setPrevious(curr);
-					return neighbor;
-				}
-				addNeighbor(curr, neighbor);
-			}
-		}
+      case "Bottom Left Corner Node":
+        right = grid[curr.getX() + 1][curr.getY()];
+        up    = grid[curr.getX()][curr.getY() - 1];
+        upperRight = grid[curr.getX() + 1][curr.getY() - 1];
 
-		// bottom right corner node
-		else if(curr.getX() == width - 1 && curr.getY() == height - 1) {
-			Node left = grid[curr.getX() - 1][curr.getY()];
-			Node up   = grid[curr.getX()][curr.getY() - 1];
+        upperRight.setDiagonal(true);
+        neighbors = Arrays.asList(right, up, upperRight);
+        break;
+    }
 
-			Node upperLeft = grid[curr.getX() - 1][curr.getY() - 1];
-			upperLeft.setDiagonal(true);
+    for(Node neighbor : neighbors) {
+      if (neighbor.sameLocation(end)) {
+        neighbor.setPrevious(curr);
+        return neighbor;
+      }
+      addNeighbor(curr, neighbor);
+    }
 
-			List<Node> neighbors = Arrays.asList(left, up, upperLeft);
+    /* sorts by Node's f() value */
+    open.sort(Comparator.comparingInt(Node::f));
 
-			for(Node neighbor : neighbors) {
-				if(neighbor.sameLocation(end)) {
-					neighbor.setPrevious(curr);
-					return neighbor;
-				}
-				addNeighbor(curr, neighbor);
-			}
-		}
+    return open.remove(0);
+  }
 
-		// bottom left corner node
-		else if(curr.getX() ==  1 && curr.getY() == height - 1) {
-			Node right = grid[curr.getX() + 1][curr.getY()];
-			Node up    = grid[curr.getX()][curr.getY() - 1];
+  private void addNeighbor(Node curr, Node neighbor) {
+    if(neighbor.isWall() || closed.contains(neighbor))
+      return;
 
-			Node upperRight = grid[curr.getX() + 1][curr.getY() - 1];
-			upperRight.setDiagonal(true);
+    if(neighbor.isDiagonal()) {
+      // if curr is better option. (Relax edge)
+      if(open.contains(neighbor) && neighbor.cost() > curr.cost() + DIAGONAL_COST)
+        neighbor.setPrevious(curr);
 
-			List<Node> neighbors = Arrays.asList(right, up, upperRight);
+      else if(!open.contains(neighbor)) {
+        neighbor.setPrevious(curr);
+        neighbor.setCost(DIAGONAL_COST + curr.cost());
+        open.add(neighbor);
+      }
+    }
 
-			for(Node neighbor : neighbors) {
-				if(neighbor.sameLocation(end)) {
-					neighbor.setPrevious(curr);
-					return neighbor;
-				}
-				addNeighbor(curr, neighbor);
-			}
-		}
+    else {
+      // if curr is better option, relax edge
+      if(open.contains(neighbor) && neighbor.cost() > curr.cost() + COST)
+        neighbor.setPrevious(curr);
 
-		/* sorts by Node's f() value */
-		open.sort(Comparator.comparingInt(Node::f));
+      else if(!open.contains(neighbor)) {
+        neighbor.setPrevious(curr);
+        neighbor.setCost(COST + curr.cost());
+        open.add(neighbor);
+      }
+    }
+  }
 
-		// maybe switch to priorityQueue
-		return open.remove(0);
-	}
+  public void process() {
+    Node curr = start;
+    open.add(start);
 
-	private void addNeighbor(Node curr, Node neighbor) {
-		if(neighbor.isWall() || closed.contains(neighbor))
-			return;
+    while(!open.isEmpty()) {
+      curr = findBestNeighbor(curr);
+      if(curr.sameLocation(end))
+        break;
+    }
 
-		if(neighbor.isDiagonal()) {
-			// if curr is better option. (Relax edge)
-			if(open.contains(neighbor) && neighbor.cost() > curr.cost() + DIAGONAL_COST)
-				neighbor.setPrevious(curr);
+    Stack<Node> stack = new Stack<>();
 
-			else if(!open.contains(neighbor)) {
-				neighbor.setPrevious(curr);
-				neighbor.setCost(DIAGONAL_COST + curr.cost());
-				open.add(neighbor);
-			}
-		}
+    while(curr != null) {
+      stack.push(curr);
+      curr = curr.previous();
+    }
 
-		else {
-			// if curr is better option. (Relax edge)
-			if(open.contains(neighbor) && neighbor.cost() > curr.cost() + COST)
-				neighbor.setPrevious(curr);
+    while(!stack.isEmpty()) {
+      Node n = stack.pop();
+      if(n.sameLocation(start)) {
+        System.out.println("Shortest Path: ");
+        System.out.println("Start Node: " + n + "\n");
+      }
 
-			else if(!open.contains(neighbor)) {
-				neighbor.setPrevious(curr);
-				neighbor.setCost(COST + curr.cost());
-				open.add(neighbor);
-			}
-		}
-	}
+      else if(n.sameLocation(end))
+        System.out.println("End Node: " + n + "\n");
 
-	public void process() {
-		Node curr = start;
-		open.add(start);
-
-		while(!open.isEmpty()) {
-			curr = findBestNeighbor(curr);
-			if(curr.sameLocation(end))
-				break;
-		}
-
-		Stack<Node> stack = new Stack<>();
-
-		while(curr != null) {
-			stack.push(curr);
-			curr = curr.previous();
-		}
-
-		while(!stack.isEmpty()) {
-			Node n = stack.pop();
-			if(n.sameLocation(start)) {
-				System.out.println("Shortest Path: ");
-				System.out.println("Start Node: " + n + "\n");
-			}
-
-			else if(n.sameLocation(end))
-				System.out.println("End Node: " + n + "\n");
-
-			else {
-				System.out.println("Path Node: " + n);
-				System.out.println("Cost: " + n.cost());
-				System.out.println("Heuristic: " + n.heuristic());
-				System.out.println("f: " + n.f() + "\n");
-			}
-		}
-	}
+      else {
+        System.out.println("Path Node: " + n);
+        System.out.println("Cost: " + n.cost());
+        System.out.println("Heuristic: " + n.heuristic());
+        System.out.println("f: " + n.f() + "\n");
+      }
+    }
+  }
 }
